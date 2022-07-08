@@ -14,4 +14,11 @@ public class King extends ChessPiece{
 	public String toString() {
 		return "K";
 	}
+
+	@Override
+	public boolean[][] possibleMoves() {
+		boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getRows()];/*criou uma matriz booleana da mesma dimensão
+		 do tabuleiro. Por padrão, todas as posições dessa matriz começam com falso*/ 
+		return mat;
+	}
 }
