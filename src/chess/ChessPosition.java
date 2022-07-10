@@ -29,10 +29,11 @@ public class ChessPosition {
 	}
 	/*toPosition() é um método para converter essa posição do tabuleiro de xadrez pra uma posição comum de matriz*/
 	
-	protected ChessPosition fromPosition(Position position) {
-		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());
+	protected static ChessPosition fromPosition(Position position) {
+		/*pega o 'position' de matriz e converte pra 'position' de xadrez*/
+		return new ChessPosition((char)('a' + position.getColumn()), 8 - position.getRow());
 	}
-	
+	 
 	@Override
 	public String toString() {
 		return  "" + column + row;
