@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
@@ -11,6 +14,9 @@ public class ChessMatch {
 	private int turn;
 	private Color currentPlayer;
 	private Board board;
+	
+	private List<Piece> piecesOnTheBoard = new ArrayList<>();
+	private List<Piece> capturedPieces = new ArrayList<>();
 	
 	public ChessMatch() {
 		board = new Board(8, 8);
@@ -58,10 +64,17 @@ public class ChessMatch {
 	
 	private Piece makeMove(Position source, Position target) {
 		Piece p = board.removePiece(source);	/*removendo a peça que estava na posição de origem*/
-		Piece capturePiece = board.removePiece(target); /*remove a possivel peça que está na posição de destino e ela, por padrão, 
+		Piece capturedPiece = board.removePiece(target); /*remove a possivel peça que está na posição de destino e ela, por padrão, 
 		será a peça capturada.*/
 		board.placePiece(p, target);			/*colocando a peça 'p' na posição de destino*/
-		return capturePiece;
+		
+		if(capturedPiece != null) {
+			/*se a peça capturada for diferente de nulo, siginifa que capturei uma peça*/
+			piecesOnTheBoard.remove(capturedPiece); /*remove a peça da posição*/
+			capturedPieces.add(capturedPiece); 		/*adiciona ela na lista de peças removidas*/
+		}
+		
+		return capturedPiece;
 	}
 	
 	private void validateSourcePosition(Position position) {
@@ -93,6 +106,7 @@ public class ChessMatch {
 	/*instancia as peças de xadrez informando as coordenadas no sistema do tabuleiro do xadrez e não da matriz pra não deixar confuso*/
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
+		piecesOnTheBoard.add(piece);
 	}
 	
 	private void initialSetup() {
