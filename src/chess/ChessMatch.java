@@ -89,7 +89,8 @@ public class ChessMatch {
 	}
 	
 	private Piece makeMove(Position source, Position target) {
-		Piece p = board.removePiece(source);	/*removendo a peça que estava na posição de origem*/
+		ChessPiece p = (ChessPiece)board.removePiece(source);	/*removendo a peça que estava na posição de origem*/
+		p.increaseMoveCount(); /*ao fazer o movimento precisa incrementar a qtde de movimentos dessa peça*/
 		Piece capturedPiece = board.removePiece(target); /*remove a possivel peça que está na posição de destino e ela, por padrão, 
 		será a peça capturada.*/
 		board.placePiece(p, target);			/*colocando a peça 'p' na posição de destino*/
@@ -106,7 +107,8 @@ public class ChessMatch {
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
 		/*método para desfazer movimento indevido do jogador(pois o próprio jogado não pode colocar seu Rei em posição
 		 * de cheque)*/
-		Piece p = board.removePiece(target);/*remover a peça da posição de destino*/
+		ChessPiece p = (ChessPiece)board.removePiece(target);/*remover a peça da posição de destino*/
+		p.decreaseMoveCount();
 		board.placePiece(p, source);/*devolvendo a peça 'p' pra sua posição de origem*/
 		
 		if(capturedPiece != null) {
