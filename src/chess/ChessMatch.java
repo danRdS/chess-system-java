@@ -16,6 +16,7 @@ public class ChessMatch {
 	private Color currentPlayer;
 	private Board board;
 	private boolean check;
+	private boolean checkMate;
 	
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -37,6 +38,10 @@ public class ChessMatch {
 	
 	public boolean getCheck() {
 		return check;
+	}
+	
+	public boolean getCheckmate() {
+		return checkMate;
 	}
 	
 	public ChessPiece[][] getPieces() {
@@ -72,7 +77,14 @@ public class ChessMatch {
 		
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 		
-		nextTurn();
+		if(testCheckMate(opponent(currentPlayer))) {
+			/*Se o oponente da peça que foi mexida ficou em check mate. Testa se o jogo acabou*/
+			checkMate = true;
+		}
+		else {
+			nextTurn();
+		}
+		
 		return (ChessPiece)capturedPiece; /*Downcasting pq 'capturedPiece' era do tipo 'Piece'*/
 	}
 	
@@ -158,6 +170,37 @@ public class ChessMatch {
 		return false; 
 	}
 	
+	private boolean testCheckMate(Color color) {
+		/*Se esta cor não estiver em check, ela também não está em mate*/
+		if(!testCheck(color)) {
+			return false;
+		}
+		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());
+		for(Piece p : list) {
+			/*Se alguma peça p nessa lista que possua um movimento que retire do check, então retorna 'false' pq o rei não está 
+			 * em check mate*/
+			boolean[][] mat = p.possibleMoves();
+			for(int i=0; i<board.getRows(); i++) {
+				for(int j=0; j<board.getColumns(); j++) {
+					if(mat[i][j]) {
+						Position source = ((ChessPiece)p).getChessPosition().toPosition();/*posição da peça p. Fez downCasting pra 
+						pegar a posição pq o atributo da peça 'p' está como 'protected'*/
+						Position target = new Position(i, j);
+						/*Movimento da peça 'p' da origem para o destino*/
+						Piece capturedPiece = makeMove(source, target);
+						boolean testCheck = testCheck(color);/*testa se o Rei da minha cor ainda está em check*/
+						undoMove(source, target, capturedPiece);/*para desfazer o movimento do 'capturedPiece' que foi só pra testar*/
+						if(!testCheck) {
+							return false;/*se não está em check, retirou o rei do check*/
+						}
+					}
+				}
+			}
+		}
+		/*se percorrer cada posição 'p' da lista e não encontrar nenhuma peça que retire do mate, então retorna 'true'*/
+		return true;
+	}
+	
 	/*instancia as peças de xadrez informando as coordenadas no sistema do tabuleiro do xadrez e não da matriz pra não deixar confuso*/
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
@@ -165,19 +208,19 @@ public class ChessMatch {
 	}
 	
 	private void initialSetup() {
-		placeNewPiece('c', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('c', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 1, new King(board, Color.WHITE));
+		placeNewPiece('h', 7, new Rook(board, Color.WHITE));
+        //placeNewPiece('c', 2, new Rook(board, Color.WHITE));
+        placeNewPiece('d', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE));
+        //placeNewPiece('e', 1, new Rook(board, Color.WHITE));
+        //placeNewPiece('d', 1, new King(board, Color.WHITE));
 
-        placeNewPiece('c', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('c', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('d', 7, new Rook(board, Color.BLACK));
+        placeNewPiece('b', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('a', 8, new King(board, Color.BLACK));
+        /*placeNewPiece('d', 7, new Rook(board, Color.BLACK));
         placeNewPiece('e', 7, new Rook(board, Color.BLACK));
         placeNewPiece('e', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('d', 8, new King(board, Color.BLACK));
+        placeNewPiece('d', 8, new King(board, Color.BLACK));*/
 	}
 		
 }
