@@ -18,7 +18,7 @@ public class Rook extends ChessPiece{
 	
 	@Override
 	public boolean[][] possibleMoves() {
-		boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getRows()];/*criou uma matriz booleana da mesma dimensão
+		boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];/*criou uma matriz booleana da mesma dimensão
 		 do tabuleiro. Por padrão, todas as posições dessa matriz começam com falso*/ 
 		
 		Position p = new Position(0, 0);
