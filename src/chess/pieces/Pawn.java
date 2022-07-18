@@ -2,13 +2,17 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class Pawn extends ChessPiece{
 
-	public Pawn(Board board, Color color) {
+	private ChessMatch chessMatch;
+	
+	public Pawn(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
+		this.chessMatch = chessMatch;
 	}
 
 	@Override
@@ -40,6 +44,23 @@ public class Pawn extends ChessPiece{
 				mat[p.getRow()][p.getColumn()] = true;
 			}
 			/*pode capturar uma peça adversaria que esta na diagonal direita*/
+			
+			// #specialmove en passant white
+			if(position.getRow() == 3) {
+				Position left = new Position(position.getRow(), position.getColumn() - 1);
+				if(getBoard().positionExists(left) && IsThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable())  {
+				/*verifica se a posição existe && se a peça é do oponente && se a peça tá que está lá é vulnerável ao en passant*/
+				/*se for 'v', o peão pode capturar a peça que está na posição 'left'*/
+					mat[left.getRow() - 1][left.getColumn()] = true;
+				}
+				Position right = new Position(position.getRow(), position.getColumn() + 1);
+				if(getBoard().positionExists(right) && IsThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable())  {
+				/*verifica se a posição existe && se a peça é do oponente && se a peça tá que está lá é vulnerável ao en passant*/
+				/*se for 'v', o peão pode capturar a peça que está na posição 'left'*/
+					mat[right.getRow() - 1][right.getColumn()] = true;
+				}
+			}
+			
 		}
 		else{
 			p.setValues(position.getRow() + 1, position.getColumn());
@@ -61,6 +82,22 @@ public class Pawn extends ChessPiece{
 			p.setValues(position.getRow() + 1, position.getColumn() + 1);
 			if(getBoard().positionExists(p) && IsThereOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
+			}
+			
+			// #specialmove en passant black
+			if(position.getRow() == 4) {
+				Position left = new Position(position.getRow(), position.getColumn() - 1);
+				if(getBoard().positionExists(left) && IsThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable())  {
+				/*verifica se a posição existe && se a peça é do oponente && se a peça tá que está lá é vulnerável ao en passant*/
+				/*se for 'v', o peão pode capturar a peça que está na posição 'left'*/
+					mat[left.getRow() + 1][left.getColumn()] = true;
+				}
+				Position right = new Position(position.getRow(), position.getColumn() + 1);
+				if(getBoard().positionExists(right) && IsThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable())  {
+				/*verifica se a posição existe && se a peça é do oponente && se a peça tá que está lá é vulnerável ao en passant*/
+				/*se for 'v', o peão pode capturar a peça que está na posição 'left'*/
+					mat[right.getRow() + 1][right.getColumn()] = true;
+				}
 			}
 		}
 		return mat;
