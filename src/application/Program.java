@@ -40,6 +40,13 @@ public class Program {
 					/*se a peça capturada for diferente de nulo, significa que alguma peça foi capturada*/
 					captured.add(capturedPiece);/*adiciona essa peça a lista de peças capturadas*/
 				}
+				if(chessMatch.getPromoted() != null) {
+				/*significa que uma peça foi promovida*/
+					System.out.print("Enter piece for promotion (B/N/R/Q): ");
+					/*Perguntando ao usuário qual peça ele quer seja promovida*/
+					String type = sc.nextLine();
+					chessMatch.replacePromotedPiece(type);
+				}
 			}
 			catch(ChessException e) {
 				System.out.println(e.getMessage());
